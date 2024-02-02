@@ -1,30 +1,13 @@
 /*
- * ESPRESSIF MIT License
+ * SPDX-FileCopyrightText: 2024 Espressif Systems (Shanghai) CO LTD
  *
- * Copyright (c) 2017 <ESPRESSIF SYSTEMS (SHANGHAI) PTE LTD>
- *
- * Permission is hereby granted for use on ESPRESSIF SYSTEMS ESP32 only, in which case,
- * it is free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
+ * SPDX-License-Identifier: Apache-2.0
  */
-
 #pragma once
 
+#include "sdkconfig.h"
 #include "esp_at_core.h"
+#include "esp_at_cmd_register.h"
 
 #define ESP_AT_PORT_TX_WAIT_MS_MAX          3000    // 3s
 #define AT_BUFFER_ON_STACK_SIZE             128     // default maximum buffer size on task stack
@@ -34,22 +17,6 @@ typedef enum {
     AT_PARAMS_IN_MFG_NVS = 1,
     AT_PARAMS_IN_PARTITION = 2,
 } at_mfg_params_storage_mode_t;
-
-#ifdef CONFIG_AT_OTA_SUPPORT
-/**
- * @brief regist at ota command set. If not,you can not use AT OTA command
- *
- */
-bool esp_at_ota_cmd_regist(void);
-#endif
-
-#ifdef CONFIG_AT_SIGNALING_COMMAND_SUPPORT
-/**
- * @brief regist at fact command set. If not,you can not use signaling command
- *
- */
-bool esp_at_fact_cmd_regist(void);
-#endif
 
 /**
  * @brief get current module name
@@ -65,21 +32,22 @@ const char* esp_at_get_module_name_by_id(uint32_t id);
 
 /**
  * @brief get current module id
- *
  */
 uint32_t esp_at_get_module_id(void);
 
 /**
- * @brief init peripheral and default parameters in factory_param.bin
+ * @brief Set current module id
  *
- */
-void esp_at_board_init(void);
+ * @param[in] id: the module id to set
+*/
+void esp_at_set_module_id(uint32_t id);
 
 /**
-* @brief regist WiFi config via web command. If not,you can not use web server to config wifi connect
-*
+ * @brief Get module id by module name
+ *
+ * @param[in] buffer: pointer to a module name string
 */
-bool esp_at_web_server_cmd_regist(void);
+void esp_at_set_module_id_by_str(const char *buffer);
 
 #ifdef CONFIG_AT_USERWKMCU_COMMAND_SUPPORT
 /**
@@ -100,19 +68,6 @@ void at_set_mcu_state_if_sleep(at_sleep_mode_t mode);
  *
  */
 void esp_at_main_preprocess(void);
-
-#ifdef CONFIG_AT_RAINMAKER_COMMAND_SUPPORT
-/**
- * @brief regist at rainmaker command set. If not,you can not use AT rainmaker command
- *
- */
-bool esp_at_rainmaker_cmd_regist(void);
-#endif
-
-/**
- * @brief init storage mode of at parameters
- */
-void at_nvs_flash_init_partition(void);
 
 /**
  * @brief get storage mode of mfg parameters
